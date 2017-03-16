@@ -1,40 +1,28 @@
 object CryptoSquare {
-  def normalizePlaintext(text: String): String = {
-    val result = text.filter(_.isLetterOrDigit).map(_.toLower)
-    println(s"normalizePlaintext: $result")
-    result
-  }
+  def normalizePlaintext(text: String): String =
+    text.filter(_.isLetterOrDigit).map(_.toLower)
 
-  def squareSize(text: String): Int = {
-    val result = (Math.ceil(Math.sqrt(text.length))).toInt
-    println(s"squareSize: $result")
-    result
-  }
+  def squareSize(text: String): Int =
+    (Math.ceil(Math.sqrt(text.length))).toInt
 
   def plaintextSegments(text: String): List[String] = {
     val np = normalizePlaintext(text)
     val size = squareSize(np)
-    val result = np.grouped(size).toList
-    println(s"plaintextSegments:\n${result.mkString("\n")}")
-    result
+
+    size match {
+      case 0 => Nil
+      case _ => normalizePlaintext(text).grouped(size).toList
+    }
   }
 
-  def ciphertext(text: String): String = {
-    val ps = plaintextSegments(text)
-    val l = squareSize(text)
-    val result = ps.map(_.padTo(l, "")).transpose.map(_.mkString).mkString
-    println(s"ciphertext: $result")
-    result
-  }
+  def ciphertext(text: String): String = convertCiphertext(text, "")
 
-  def normalizedCiphertext(text: String): String = {
-    // plaintextSegments
-    // ciphertext
-    // plaintextSegments
+  def normalizedCiphertext(text: String): String = convertCiphertext(text, " ")
 
-
-    val result = plaintextSegments((ciphertext(text))).mkString(" ")
-    println(s"normalizedCiphertext: $result")
-    result
-  }
+  private def convertCiphertext(text: String, sep: String): String =
+    plaintextSegments(text)
+      .map(_.padTo(squareSize(text), ""))
+      .transpose.map(_.mkString)
+      .mkString(sep)
+      .trim
 }

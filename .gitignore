@@ -2,6 +2,9 @@
 *.log
 *.sc
 
+# exercism.io
+.keep
+
 # sbt specific
 dist/*
 target/

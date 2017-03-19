@@ -11,7 +11,7 @@ object CryptoSquare {
 
     size match {
       case 0 => Nil
-      case _ => normalizePlaintext(text).grouped(size).toList
+      case _ => np.grouped(size).toList
     }
   }
 

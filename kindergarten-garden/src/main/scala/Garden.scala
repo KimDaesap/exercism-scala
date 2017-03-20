@@ -12,8 +12,8 @@ object Plant extends Enumeration {
 }
 
 class Garden(private val children: List[String], private val cups: String) {
-  val Array(xs, ys) = cups.split("\n").map(_.grouped(2).toList)
-  val map = children.sorted.zip(
+  private val Array(xs, ys) = cups.split("\n").map(_.grouped(2).toList)
+  private val map = children.sorted.zip(
     List(xs, ys).transpose.flatten.mkString.grouped(4).toList).toMap
 
   def getPlants(child: String): List[Plant] = {
@@ -22,7 +22,6 @@ class Garden(private val children: List[String], private val cups: String) {
       case true => { for { x <- map(child) } yield Plant.get(x) }.toList
     }
   }
-
 }
 
 object Garden {

@@ -6,22 +6,19 @@ object Bearing extends Enumeration {
   }
 
   type Bearing = Dir
+
   val North = Dir(0, 1)
   val East = Dir(1, 0)
   val South = Dir(0, -1)
   val West = Dir(-1, 0)
 
+  private val indexed = Bearing.values.toIndexedSeq
+
   def right(dir: Bearing): Bearing =
-    Bearing
-      .values
-      .toIndexedSeq((dir.id + 1) % maxId)
-      .asInstanceOf[Bearing]
+    indexed((dir.id + 1) % maxId).asInstanceOf[Bearing]
 
   def left(dir: Bearing): Bearing =
-    Bearing
-      .values
-      .toIndexedSeq((dir.id - 1 + maxId) % maxId)
-      .asInstanceOf[Bearing]
+    indexed((dir.id - 1 + maxId) % maxId).asInstanceOf[Bearing]
 }
 
 case class Robot(bearing: Bearing, coordinates: (Int, Int)) {

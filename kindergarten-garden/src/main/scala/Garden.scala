@@ -18,7 +18,7 @@ class Garden(private val children: List[String], private val cups: String) {
 
   def getPlants(child: String): List[Plant] = {
     map.contains(child) match {
-      case false => List[Plant]()
+      case false => Nil
       case true => { for { x <- map(child) } yield Plant.get(x) }.toList
     }
   }

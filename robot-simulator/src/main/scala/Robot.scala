@@ -1,16 +1,15 @@
 import Bearing.Bearing
 
 object Bearing extends Enumeration {
-  case class Dir(value: (Int, Int)) extends Val {
+  case class Vector(value: (Int, Int)) extends Val {
     def +(that: (Int, Int)) = (that._1 + value._1, that._2 + value._2)
   }
 
-  type Bearing = Dir
-
-  val North = Dir(0, 1)
-  val East = Dir(1, 0)
-  val South = Dir(0, -1)
-  val West = Dir(-1, 0)
+  type Bearing = Vector
+  val North = Vector(0, 1)
+  val East = Vector(1, 0)
+  val South = Vector(0, -1)
+  val West = Vector(-1, 0)
 
   private val indexed = Bearing.values.toIndexedSeq
 
@@ -22,18 +21,15 @@ object Bearing extends Enumeration {
 }
 
 case class Robot(bearing: Bearing, coordinates: (Int, Int)) {
-  def advance(): Robot = Robot(bearing, bearing + coordinates)
-  def turnRight(): Robot = Robot(Bearing.right(bearing), coordinates)
-  def turnLeft(): Robot = Robot(Bearing.left(bearing), coordinates)
-  def simulate(xs: String): Robot = {
-    var robot = Robot(bearing, coordinates)
-    for ( x <- xs ) {
-      x match {
-        case 'A' => robot = robot.advance
-        case 'L' => robot = robot.turnLeft
-        case 'R' => robot = robot.turnRight
-      }
+  def advance(): Robot = this.copy(coordinates = bearing + coordinates)
+  def turnRight(): Robot = this.copy(bearing = Bearing.right(bearing))
+  def turnLeft(): Robot = this.copy(bearing = Bearing.left(bearing))
+  def simulate(xs: String): Robot =
+    xs.foldLeft(this) {
+      (acc, x) => x match {
+        case 'A' => acc.advance
+        case 'L' => acc.turnLeft
+        case 'R' => acc.turnRight
     }
-    robot
   }
 }

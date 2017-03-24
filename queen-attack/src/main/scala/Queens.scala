@@ -7,10 +7,8 @@ object Queens {
   }
 
   def canAttack(white: Position, black: Position): Boolean = {
-    if (white.x == black.x) true
-    else if (white.y == black.y) true
-    else if (Math.abs(white.x - black.x) == Math.abs(white.y - black.y)) true
-    else false
+    (white.x == black.x) || (white.y == black.y) ||
+      (Math.abs(white.x - black.x) == Math.abs(white.y - black.y))
   }
 }
 

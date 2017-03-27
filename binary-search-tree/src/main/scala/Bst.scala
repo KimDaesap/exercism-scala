@@ -1,20 +1,17 @@
 
-case class Bst(value: Int, var left: Option[Bst], var right: Option[Bst]) {
+case class Bst(value: Int, val left: Option[Bst], val right: Option[Bst]) {
   def insert(input: Int): Bst = {
-    def loop(cursor: Bst, input: Int, root: Bst): Bst = {
-      if (cursor.value > input) if (cursor.left.isEmpty)
-
-
+    def loop(cursor: Option[Bst], in: Int): Bst = {
       cursor match {
-        case cur if cur.value > input => if (cur.left.isEmpty) cur.copy(left = Some(Bst(input))) else Bst(0)
-        case cur if cur.value < input =>
+        case None => Bst(in)
+        case Some(x) if x.value > in => Bst(x.value, Some(loop(x.left, in)), x.right)
+        case _ => Bst(0)
       }
-
-
-      root
     }
 
-    loop(this, input, this)
+    loop(Some(this), input)
+
+    Bst(1, None, None)
   }
 }
 

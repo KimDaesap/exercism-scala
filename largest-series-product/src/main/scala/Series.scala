@@ -4,5 +4,4 @@ object Series {
     else if (digits.length < n) None
     else Some(digits.map(_.asDigit).sliding(n).map(_.product).max)
   }
-
 }

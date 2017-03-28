@@ -1,46 +1,18 @@
 object Luhn {
   def validate(digits: String): Boolean = {
-
-    false
+    val normal = digits.replace(" ", "").reverse
+    if (normal.forall(_.isDigit)) {
+      val sum = normal.map(_.asDigit).zipWithIndex.foldLeft(0) {
+        (acc, tup) => tup match {
+          case (value, index) if (index % 2 == 1) =>
+            val double = value * 2
+            val salt = if (double > 10) -9 else 0
+            acc + double + salt
+          case (v, _) => acc + v
+        }
+      }
+      (sum != 0) && (sum % 10 == 0)
+    }
+    else false
   }
-
 }
-
-
-/*
-val input = "046 454 286"
-val digits = input.replaceAll(" ", "").reverse.map(_.asDigit)
-
-
-
-input.replace(" ", "").forall(c => c.isDigit)
-
-
-
-Option("046 454 286".filter(_.isDigit))
-
-
-Option(null)
-Option(Nil)
-
-digits
-digits(0)
-
-
-val grouped = digits.grouped(2)
-val evens = Iterator.from(0, 2).takeWhile(_ < digits.length).map(digits(_))
-val odds = Iterator.from(1, 2).takeWhile(_ < digits.length).map(digits(_))
-
-digits
-grouped.foreach(println)
-
-grouped.mkString
-
-
-
-evens.foreach(println)
-odds.foreach(println)
-
-
-//Option(throw new Exception("I am a boy"))
- */

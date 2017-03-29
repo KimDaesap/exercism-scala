@@ -6,9 +6,7 @@ object NumberType extends Enumeration {
 
 object PerfectNumbers {
   def classify(number: Int) = {
-    NumberType({
-      val factorSum = (1 to number / 2).filter(number % _ == 0).sum
-      factorSum compare number
-    })
+    val factorSum = (1 to number / 2).filter(number % _ == 0).sum
+    NumberType(factorSum compare number)
   }
 }

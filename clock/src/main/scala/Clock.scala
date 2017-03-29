@@ -11,12 +11,13 @@ class Clock private (val h: Int, val m: Int) {
 object Clock {
   val DayHours = 24
   val HourMinutes = 60
+  val DayMinutes = DayHours * HourMinutes
 
   def apply(m: Int): Clock = apply(0, m)
   def apply(h: Int, m: Int): Clock = {
-    val nm = (HourMinutes + (m % HourMinutes)) % HourMinutes
-    val mh = Math.floor(m.toDouble / HourMinutes.toDouble).toInt
-    val nh = (DayHours + (h % DayHours) + (mh % DayHours)) % DayHours
-    new Clock(nh, nm)
+    val totalMinutes = Math.floorMod(h * 60 + m, DayMinutes)
+    val hour: Int = totalMinutes / 60
+    val minute: Int = totalMinutes % 60
+    new Clock(hour, minute)
   }
 }

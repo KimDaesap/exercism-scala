@@ -15,9 +15,9 @@ object Clock {
 
   def apply(m: Int): Clock = apply(0, m)
   def apply(h: Int, m: Int) = {
-    val totalMinutes = Math.floorMod(h * 60 + m, DayMinutes)
-    val hour: Int = totalMinutes / 60
-    val minute: Int = totalMinutes % 60
+    val totalMin = Math.floorMod(h * HourMinutes + m, DayMinutes)
+    val hour: Int = totalMin / HourMinutes
+    val minute: Int = totalMin % HourMinutes
     new Clock(hour, minute)
   }
 }

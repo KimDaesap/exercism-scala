@@ -1,15 +1,14 @@
 object NumberType extends Enumeration {
-  type NumberType = Value
-  val Deficient, Perfect, Abundant = values
+  val Deficient = Value(-1)
+  val Perfect = Value(0)
+  val Abundant = Value(1)
 }
 
 object PerfectNumbers {
-  def classify(number: Int): NumberType.ValueSet = {
-    val factorSum = Iterator.from(1).takeWhile(_ < number).filter(number % _ == 0).sum
-    factorSum match {
-      case fs if fs == number => NumberType.Perfect
-      case fs if fs > number => NumberType.Abundant
-      case fs if fs < number => NumberType.Deficient
-    }
+  def classify(number: Int) = {
+    NumberType({
+      val factorSum = (1 to number / 2).filter(number % _ == 0).sum
+      factorSum compare number
+    })
   }
 }

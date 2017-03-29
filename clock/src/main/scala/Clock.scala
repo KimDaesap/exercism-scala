@@ -1,7 +1,7 @@
 class Clock private (val h: Int, val m: Int) {
-  def +(other: Clock): Clock = Clock(h + other.h, m + other.m)
-  def -(other: Clock): Clock = Clock(h - other.h, m - other.m)
-  override def equals(other: Any): Boolean = other match {
+  def +(other: Clock) = Clock(h + other.h, m + other.m)
+  def -(other: Clock) = Clock(h - other.h, m - other.m)
+  override def equals(other: Any) = other match {
     case o: Clock => (h == o.h && m == o.m)
     case _ => false
   }
@@ -14,7 +14,7 @@ object Clock {
   val DayMinutes = DayHours * HourMinutes
 
   def apply(m: Int): Clock = apply(0, m)
-  def apply(h: Int, m: Int): Clock = {
+  def apply(h: Int, m: Int) = {
     val totalMinutes = Math.floorMod(h * 60 + m, DayMinutes)
     val hour: Int = totalMinutes / 60
     val minute: Int = totalMinutes % 60

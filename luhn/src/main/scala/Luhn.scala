@@ -1,18 +1,23 @@
 object Luhn {
   def validate(digits: String): Boolean = {
     val normal = digits.replace(" ", "").reverse
-    if (normal.forall(_.isDigit)) {
-      val sum = normal.map(_.asDigit).zipWithIndex.foldLeft(0) {
-        (acc, tup) => tup match {
-          case (value, index) if (index % 2 == 1) =>
-            val double = value * 2
-            val salt = if (double > 10) -9 else 0
-            acc + double + salt
-          case (v, _) => acc + v
+    lazy val values = normal.map(_.asDigit)
+
+    def loop(index: Int,  sum: Int): Boolean = {
+      if (index == values.length) (sum != 0) && (sum % 10 == 0)
+      else {
+        val value = values(index)
+
+        if (index % 2 == 1) loop(index + 1, sum + value)
+        else {
+          val double = value * 2
+          val salt = if (double > 10) -9 else 0
+          loop(index + 1, sum + double + salt)
         }
       }
-      (sum != 0) && (sum % 10 == 0)
     }
+
+    if (normal.forall(_.isDigit)) loop(0, 0)
     else false
   }
 }

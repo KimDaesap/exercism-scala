@@ -1,5 +1,15 @@
 case class Matrix(text: String) {
-  def cols(col: Int): Vector = ???
+  val matrix = text
+    .split('\n')
+    .map(_.split(' ').map(_.toInt).toVector)
+    .toVector
 
-  def rows(row: Int): Vector = ???
+  def rows(row: Int): Vector[Int] = {
+    matrix.apply(row)
+  }
+
+  def cols(col: Int): Vector[Int] = {
+    matrix.transpose.apply(col)
+  }
 }
+

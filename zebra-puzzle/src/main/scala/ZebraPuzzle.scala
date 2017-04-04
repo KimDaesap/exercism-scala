@@ -62,20 +62,24 @@ val fact01: List[Fact] = List(
   Fact(order = Some(4)),
   Fact(order = Some(5)))
 
-val facts02: Fact = Fact(color = Some(Red), resident = Some(Englishman))
+val fact02: Fact = Fact(color = Some(Red), resident = Some(Englishman))
 
-val facts03: Fact = Fact(resident = Some(Spaniard), pet = Some(Dog))
+val fact03: Fact = Fact(resident = Some(Spaniard), pet = Some(Dog))
 
-val a1 = Some(1)
-val b1 = Some(1)
+def tryCombine(l: Option[Any], r: Option[Any]) =
+  if (l.isDefined && r.isDefined && l != r) Failure
+  else Success((l ++ r).headOption)
 
-val tryCombine = if (a1.isDefined && b1.isDefined && a1 != b1) Failure
-else Success((a1 ++ b1).headOption)
+val zs = fact02.productIterator.zip(fact03.productIterator).toList
 
-tryCombine match {
-  case Success(x) =>
-  case Failure =>
+for ((l:Option[Any], r: Option[Any]) <- zs) {
+  println(s"$l, $r")
+  println(tryCombine(l, r))
 }
+
+for { (l:Option[Any], r: Option[Any]) <- zs
+  isSuccess = tryCombine(l, r)
+} yield isSuccess
  */
 
 /*

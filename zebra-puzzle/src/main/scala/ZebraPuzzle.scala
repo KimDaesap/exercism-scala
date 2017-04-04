@@ -53,9 +53,10 @@ object ZebraPuzzle {
 
 /*
 import ZebraPuzzle._
+
 import scala.util.{Failure, Success}
 
-val fact01: List[Fact] = List(
+val houses = List(
   Fact(order = Some(1)),
   Fact(order = Some(2)),
   Fact(order = Some(3)),
@@ -80,6 +81,9 @@ for ((l:Option[Any], r: Option[Any]) <- zs) {
 for { (l:Option[Any], r: Option[Any]) <- zs
   isSuccess = tryCombine(l, r)
 } yield isSuccess
+
+
+houses.updated(0, houses(0).copy(order = Some(2)))
  */
 
 /*

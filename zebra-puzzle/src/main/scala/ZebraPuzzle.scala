@@ -2,6 +2,13 @@ import scala.collection.mutable.ListBuffer
 
 object ZebraPuzzle {
 
+  sealed trait Color
+  case object Red extends Color
+  case object Blue extends Color
+  case object Green extends Color
+  case object Yellow extends Color
+  case object Ivory extends Color
+
   sealed trait Resident
   case object Englishman extends Resident
   case object Spaniard extends Resident
@@ -9,12 +16,33 @@ object ZebraPuzzle {
   case object Norwegian extends Resident
   case object Japanese extends Resident
 
-  case class House(order: Int,
-                  nationality: Resident,
-                  color: String,
-                  drink: String,
-                  smoke: String,
-                  pet: String)
+  sealed trait Drink
+  case object Tea extends Drink
+  case object Milk extends Drink
+  case object Coffee extends Drink
+  case object OrangeJuice extends Drink
+  case object Water extends Drink
+
+  sealed trait Smoke
+  case object Kools extends Color
+  case object LuckyStrike extends Color
+  case object Chesterfields extends Color
+  case object OldGold extends Color
+  case object Parliamanets extends Color
+
+  sealed trait Pet
+  case object Dog extends Pet
+  case object Fox extends Pet
+  case object Horse extends Pet
+  case object Snails extends Pet
+  case object Zebra extends Pet
+
+  case class Fact(order: Option[Int] = None,
+                 color: Option[Color] = None,
+                 resident: Option[Resident] = None,
+                 drink: Option[Drink] = None,
+                 smoke: Option[Smoke] = None,
+                 pet: Option[Pet] = None)
 
   case class Solution(waterDrinker: Resident, zebraOwner: Resident)
 
@@ -22,6 +50,33 @@ object ZebraPuzzle {
     ???
   }
 }
+
+/*
+import ZebraPuzzle._
+import scala.util.{Failure, Success}
+
+val fact01: List[Fact] = List(
+  Fact(order = Some(1)),
+  Fact(order = Some(2)),
+  Fact(order = Some(3)),
+  Fact(order = Some(4)),
+  Fact(order = Some(5)))
+
+val facts02: Fact = Fact(color = Some(Red), resident = Some(Englishman))
+
+val facts03: Fact = Fact(resident = Some(Spaniard), pet = Some(Dog))
+
+val a1 = Some(1)
+val b1 = Some(1)
+
+val tryCombine = if (a1.isDefined && b1.isDefined && a1 != b1) Failure
+else Success((a1 ++ b1).headOption)
+
+tryCombine match {
+  case Success(x) =>
+  case Failure =>
+}
+ */
 
 /*
 이 수수께끼는 5 개의 다른 색깔의 주택으로 구성되어 있으며 각기 다른 국적의 거주자가 살고 있습니다.
@@ -40,7 +95,7 @@ object ZebraPuzzle {
 11. Chesterfields를 피우는 남자는 여우를 키우는 사람에 옆 집에서 산다.
 12. Kools를 피는 사람은 말을 키우는 사람 옆 집에 산다.
 13. Lucky Strike를 피는 사람은 오렌지 주스를 마신다.
-14. 일본인은 Parliaments를 핀다.
+14. 일본인은 Parliamanets를 핀다.
 15. 노르웨이 사람은 파란집 옆에 산다.
 
 1. [ House(None, None, None, None, None, None)

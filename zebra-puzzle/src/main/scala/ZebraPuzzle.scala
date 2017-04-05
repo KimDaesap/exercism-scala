@@ -1,6 +1,13 @@
-import scala.collection.mutable.ListBuffer
+import scala.util.Try
 
 object ZebraPuzzle {
+
+  sealed trait Color
+  case object Ivory extends Color
+  case object Red extends Color
+  case object Green extends Color
+  case object Blue extends Color
+  case object Yellow extends Color
 
   sealed trait Resident
   case object Englishman extends Resident
@@ -9,14 +16,60 @@ object ZebraPuzzle {
   case object Norwegian extends Resident
   case object Japanese extends Resident
 
-  case class House(order: Int,
-                  nationality: Resident,
-                  color: String,
-                  drink: String,
-                  smoke: String,
-                  pet: String)
+  sealed trait Drink
+  case object Water extends Drink
+  case object Tea extends Drink
+  case object Milk extends Drink
+  case object Coffee extends Drink
+  case object OrangeJuice extends Drink
+
+  sealed trait Smoke
+  case object Kools extends Smoke
+  case object ChesterFields extends Smoke
+  case object OldGold extends Smoke
+  case object LuckyStrike extends Smoke
+  case object Parliamanets extends Smoke
+
+  sealed trait Pet
+  case object Zebra extends Pet
+  case object Fox extends Pet
+  case object Horse extends Pet
+  case object Snails extends Pet
+  case object Dog extends Pet
+
+  type House = Fact
+  type Houses = List[House]
+  type Facts = List[Fact]
+  case class Fact(order: Option[Int], color: Option[Color],
+    resident: Option[Resident], drink: Option[Drink],
+    smoke: Option[Smoke], pet: Option[Pet])
 
   case class Solution(waterDrinker: Resident, zebraOwner: Resident)
+
+  // fact와 house의 합성을 시도.
+  def tryCombine(fact: Fact, house: House): Try[House] = {
+    ???
+  }
+
+  def findSolution(facts: Facts, houses: Houses): Option[Houses] = {
+    // 순회.
+    def traversal(hs: Houses, f: Fact): Option[Houses] = {
+      // houses를 순회하면서 fact를 대입해본다.
+      // > hs == Nil => None
+      // > 대입이 성공하면 findSolution(facts.tail, updatedHs)
+      // > 대입이 실패하면 traversal(hs.tail, f)
+
+      hs match {
+        case Nil => None
+        case h :: t => ???
+      }
+    }
+
+    facts match {
+      case Nil => Some(houses)
+      case h :: t => traversal(houses, h)
+    }
+  }
 
   lazy val solve: Solution = {
     ???
@@ -40,7 +93,7 @@ object ZebraPuzzle {
 11. Chesterfields를 피우는 남자는 여우를 키우는 사람에 옆 집에서 산다.
 12. Kools를 피는 사람은 말을 키우는 사람 옆 집에 산다.
 13. Lucky Strike를 피는 사람은 오렌지 주스를 마신다.
-14. 일본인은 Parliaments를 핀다.
+14. 일본인은 Parliamanets를 핀다.
 15. 노르웨이 사람은 파란집 옆에 산다.
 
 1. [ House(None, None, None, None, None, None)

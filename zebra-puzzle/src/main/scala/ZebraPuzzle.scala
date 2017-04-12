@@ -37,23 +37,23 @@ object ZebraPuzzle {
   case object Snails extends Pet
   case object Dog extends Pet
 
-  type House = Fact
+  type House = Clue
   type Houses = List[House]
-  type Facts = List[Fact]
-  case class Fact(order: Option[Int], color: Option[Color],
-    resident: Option[Resident], drink: Option[Drink],
-    smoke: Option[Smoke], pet: Option[Pet])
+  type Fact = List[Clue]
+  case class Clue(order: Option[Int], color: Option[Color],
+                  resident: Option[Resident], drink: Option[Drink],
+                  smoke: Option[Smoke], pet: Option[Pet])
 
   case class Solution(waterDrinker: Resident, zebraOwner: Resident)
 
   // fact와 house의 합성을 시도.
-  def tryCombine(fact: Fact, house: House): Try[House] = {
+  def tryCombine(fact: Clue, house: House): Try[House] = {
     ???
   }
 
-  def findSolution(facts: Facts, houses: Houses): Option[Houses] = {
+  def findSolution(facts: Fact, houses: Houses): Option[Houses] = {
     // 순회.
-    def traversal(hs: Houses, f: Fact): Option[Houses] = {
+    def traversal(hs: Houses, f: Clue): Option[Houses] = {
       // houses를 순회하면서 fact를 대입해본다.
       // > hs == Nil => None
       // > 대입이 성공하면 findSolution(facts.tail, updatedHs)
@@ -86,7 +86,7 @@ object ZebraPuzzle {
 4. 녹색집 사람은 커피를 마신다.
 5. 우크라이나 사람은 차를 마신다.
 6. 녹색집은 흰색 집 바로 오른쪽에 있다.
-7. Oldgold를 피는 사람은 달팽이를 키운다.
+7. OldGold를 피는 사람은 달팽이를 키운다.
 8. Kools는 노란 집에서 핀다.
 9. 가운데 사는 사람은 우유를 마신다.
 10. 노르웨이 사람은 첫 번째 집에 산다.

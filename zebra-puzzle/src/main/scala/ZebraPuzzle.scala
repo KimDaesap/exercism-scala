@@ -1,13 +1,13 @@
-import scala.collection.mutable.ListBuffer
+import scala.util.Try
 
 object ZebraPuzzle {
 
   sealed trait Color
-  case object Red extends Color
-  case object Blue extends Color
-  case object Green extends Color
-  case object Yellow extends Color
   case object Ivory extends Color
+  case object Red extends Color
+  case object Green extends Color
+  case object Blue extends Color
+  case object Yellow extends Color
 
   sealed trait Resident
   case object Englishman extends Resident
@@ -17,74 +17,64 @@ object ZebraPuzzle {
   case object Japanese extends Resident
 
   sealed trait Drink
+  case object Water extends Drink
   case object Tea extends Drink
   case object Milk extends Drink
   case object Coffee extends Drink
   case object OrangeJuice extends Drink
-  case object Water extends Drink
 
   sealed trait Smoke
-  case object Kools extends Color
-  case object LuckyStrike extends Color
-  case object Chesterfields extends Color
-  case object OldGold extends Color
-  case object Parliamanets extends Color
+  case object Kools extends Smoke
+  case object ChesterFields extends Smoke
+  case object OldGold extends Smoke
+  case object LuckyStrike extends Smoke
+  case object Parliamanets extends Smoke
 
   sealed trait Pet
-  case object Dog extends Pet
+  case object Zebra extends Pet
   case object Fox extends Pet
   case object Horse extends Pet
   case object Snails extends Pet
-  case object Zebra extends Pet
+  case object Dog extends Pet
 
-  case class Fact(order: Option[Int] = None,
-                 color: Option[Color] = None,
-                 resident: Option[Resident] = None,
-                 drink: Option[Drink] = None,
-                 smoke: Option[Smoke] = None,
-                 pet: Option[Pet] = None)
+  type House = Clue
+  type Houses = List[House]
+  type Fact = List[Clue]
+  case class Clue(order: Option[Int], color: Option[Color],
+                  resident: Option[Resident], drink: Option[Drink],
+                  smoke: Option[Smoke], pet: Option[Pet])
 
   case class Solution(waterDrinker: Resident, zebraOwner: Resident)
+
+  // fact와 house의 합성을 시도.
+  def tryCombine(fact: Clue, house: House): Try[House] = {
+    ???
+  }
+
+  def findSolution(facts: Fact, houses: Houses): Option[Houses] = {
+    // 순회.
+    def traversal(hs: Houses, f: Clue): Option[Houses] = {
+      // houses를 순회하면서 fact를 대입해본다.
+      // > hs == Nil => None
+      // > 대입이 성공하면 findSolution(facts.tail, updatedHs)
+      // > 대입이 실패하면 traversal(hs.tail, f)
+
+      hs match {
+        case Nil => None
+        case h :: t => ???
+      }
+    }
+
+    facts match {
+      case Nil => Some(houses)
+      case h :: t => traversal(houses, h)
+    }
+  }
 
   lazy val solve: Solution = {
     ???
   }
 }
-
-/*
-import ZebraPuzzle._
-
-import scala.util.{Failure, Success}
-
-val houses = List(
-  Fact(order = Some(1)),
-  Fact(order = Some(2)),
-  Fact(order = Some(3)),
-  Fact(order = Some(4)),
-  Fact(order = Some(5)))
-
-val fact02: Fact = Fact(color = Some(Red), resident = Some(Englishman))
-
-val fact03: Fact = Fact(resident = Some(Spaniard), pet = Some(Dog))
-
-def tryCombine(l: Option[Any], r: Option[Any]) =
-  if (l.isDefined && r.isDefined && l != r) Failure
-  else Success((l ++ r).headOption)
-
-val zs = fact02.productIterator.zip(fact03.productIterator).toList
-
-for ((l:Option[Any], r: Option[Any]) <- zs) {
-  println(s"$l, $r")
-  println(tryCombine(l, r))
-}
-
-for { (l:Option[Any], r: Option[Any]) <- zs
-  isSuccess = tryCombine(l, r)
-} yield isSuccess
-
-
-houses.updated(0, houses(0).copy(order = Some(2)))
- */
 
 /*
 이 수수께끼는 5 개의 다른 색깔의 주택으로 구성되어 있으며 각기 다른 국적의 거주자가 살고 있습니다.
@@ -96,7 +86,7 @@ houses.updated(0, houses(0).copy(order = Some(2)))
 4. 녹색집 사람은 커피를 마신다.
 5. 우크라이나 사람은 차를 마신다.
 6. 녹색집은 흰색 집 바로 오른쪽에 있다.
-7. Oldgold를 피는 사람은 달팽이를 키운다.
+7. OldGold를 피는 사람은 달팽이를 키운다.
 8. Kools는 노란 집에서 핀다.
 9. 가운데 사는 사람은 우유를 마신다.
 10. 노르웨이 사람은 첫 번째 집에 산다.

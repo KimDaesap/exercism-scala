@@ -5,8 +5,8 @@ object RunLengthEncoding {
       xs match {
         case "" => acc
         case t => {
-          val char = t.take(1)
-          val (left, right) = t.span(_ == char.head)
+          val char = t.head
+          val (left, right) = t.span(_ == char)
           val lt = if (left.length > 1) left.length.toString else ""
           loop(right, acc + lt + char)
         }

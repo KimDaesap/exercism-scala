@@ -1,14 +1,14 @@
 object RunLengthEncoding {
 
   def encode(str: String): String = {
-    def loop(xs: Seq[Char], acc: String): String = {
+    def loop(xs: String, acc: String): String = {
       xs match {
-        case Nil => acc
-        case h :: t => {
-          val remains = t.dropWhile(_ == h)
-          val l = xs.length - remains.length
-          val n = if (l > 1) l.toString else ""
-          loop(remains, acc + n + h)
+        case "" => acc
+        case t => {
+          val char = t.take(1)
+          val (left, right) = t.span(_ == char.head)
+          val lt = if (left.length > 1) left.length.toString else ""
+          loop(right, acc + lt + char)
         }
       }
     }
@@ -17,18 +17,19 @@ object RunLengthEncoding {
   }
 
   def decode(str: String): String = {
-    ???
+    def loop(xs: String, acc: String): String = {
+      xs match {
+        case "" => acc
+        case t => {
+          val (lt, dt) = t.span(_.isDigit)
+          val l = if (lt == "") 1 else lt.toInt
+          val (char, remains) = dt.splitAt(1)
+          loop(remains, acc + char * l)
+        }
+      }
+    }
+
+    loop(str, "")
   }
 }
 
-
-/*
-
-val input = "12WB12W3B24WB"
-
-val (length, remains) = input.span(_.isDigit)
-var l: Int = length match { case "" => 1; case x => x.toInt }
-
-"TEST:" + (remains.take(1) * l)
-
-*/

@@ -6,6 +6,6 @@ case class Phrase(text: String) {
       .filterNot(c => ":!&@$%^&.".contains(c))
       .split("[ ,]+")
       .groupBy(identity)
-      .map { case (k, v) => (k, v.length) }
+      .mapValues(_.length)
   }
 }

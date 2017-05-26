@@ -1,6 +1,5 @@
 # exercism-scala
-### exercism.io 문제 풀이
-- [hello world](http://exercism.io/submissions/2aaf04a5dda74a74a709cedd26d80df8)
-- [bob](http://exercism.io/submissions/767596a5bc5b4246954bc0cc1f1f748e)
-- [bank account](http://exercism.io/submissions/dc6f74b87598419784c20dcf39fe5ae6)
-- [Kindergarten Garden](http://exercism.io/exercises/scala/kindergarten-garden/readme)
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f970ca16a03b40568ce3326a6372ea01)](https://www.codacy.com/app/KimDaesap/exercism-scala?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KimDaesap/exercism-scala&amp;utm_campaign=Badge_Grade)
+
+## exercism.io 문제 풀이

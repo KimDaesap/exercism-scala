@@ -9,7 +9,7 @@ object PythagoreanTriplet {
   }
 
   def isPythagorean(tuple: (Int, Int, Int)): Boolean = {
-    val sorted = tuple match { case (a,b,c) => List(a,b,c).sorted }
-    sorted match { case List(a, b, c) => a * a + b * b == c * c }
+    val List(a,b,c) = List(tuple._1, tuple._2, tuple._3).sorted
+    a * a + b * b == c * c
   }
 }

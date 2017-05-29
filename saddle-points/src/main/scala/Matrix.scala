@@ -1,6 +1,6 @@
 case class Matrix(matrix: List[List[Int]]) {
-  private val rowsMax = matrix.map(xs => xs.max)
-  private val columnsMin =  matrix.transpose.map(xs => xs.min)
+  private val rowsMax = matrix.map(_.max)
+  private val columnsMin =  matrix.transpose.map(_.min)
 
   def saddlePoints: Set[(Int, Int)] = {
     val ret = for {

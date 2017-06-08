@@ -1,7 +1,7 @@
 class Deque[A] {
-  abstract class Node[AA] {
-    var prev: Node[AA]
-    var next: Node[AA]
+  abstract class Node[B] {
+    var prev: Node[B]
+    var next: Node[B]
   }
 
   case class EndNode(var prev: Node[A], var next: Node[A]) extends Node[A]

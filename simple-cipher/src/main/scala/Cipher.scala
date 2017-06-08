@@ -6,19 +6,13 @@ case class Cipher(op: Option[String]) {
       else a
   }
 
-  def loop(seq: Seq[(Char, Char)])(f: (Int, Int) => Int): String = {
-    seq match {
-      case Seq() => ""
-      case (v, k) +: t => (Math.floorMod(f(v - 'a', k - 'a'), 26) + 'a').toChar + loop(t)(f)
-    }
+  def loop(seq: Seq[(Char, Char)])(f: (Int, Int) => Int): String = seq match {
+    case Seq() => ""
+    case (v, k) +: t => (Math.floorMod(f(v - 'a', k - 'a'), 26) + 'a').toChar + loop(t)(f)
   }
 
-  def decode(value: String): String = {
-    loop(value.zip(key))((v, k) => v - k)
-  }
+  def decode(value: String): String = loop(value.zip(key))((v, k) => v - k)
 
-  def encode(value: String): String = {
-    loop(value.zip(key))((v, k) => v + k)
-  }
+  def encode(value: String): String = loop(value.zip(key))((v, k) => v + k)
 
 }

@@ -1,53 +1,51 @@
-case class Node[A](var prev: Option[Node[A]], var next: Option[Node[A]], get: A)
-
-case class Deque[A](private var _head: Option[Node[A]], private var _tail: Option[Node[A]]) {
-  def head = _head
-  def tail = _tail
-
-  def unshift(value: A): Unit = {
-    val node = Some(Node(None, _head, value))
-
-    _head match {
-      case Some(n) => n.prev = node
-      case None => ()
-    }
-
-    _tail match {
-      case Some(_) => ()
-      case None => _tail = node
-    }
-
-    _head = node
+class Deque[A] {
+  abstract class Node[AA] {
+    var prev: Node[AA]
+    var next: Node[AA]
   }
 
-  def shift: Option[A] = _head match {
-    case None => None
-    case Some(n) =>
-      _head = n.next
-      _head.map(nn => nn.prev = None)
-      Some(n.get)
+  case class EndNode(var prev: Node[A], var next: Node[A]) extends Node[A]
+  case class ValueNode(var prev: Node[A], get: A, var next: Node[A]) extends Node[A]
+
+  val end: EndNode = EndNode(null, null)
+  end.prev = end
+  end.next = end
+
+  def unshift(value: A): Deque[A] = {
+    val node = ValueNode(end, value, end.next)
+    end.next.prev = node
+    end.next = node
+    this
   }
 
-  def push(value: A): Unit = {
-    val node = Some(Node(_tail, None, value))
-    _tail.map(nn => nn.next = node)
-    _tail = node
-
-    _head match {
-      case None => _head = node
-      case Some(_) => ()
+  def shift: Option[A] = {
+    end.next match {
+      case EndNode(_, _) => None
+      case ValueNode(p, v, n) =>
+        end.next.prev = n
+        end.next = n
+        Some(v)
     }
   }
 
-  def pop: Option[A] = _tail match {
-    case None => None
-    case Some(n) =>
-      _tail = n.prev
-      _tail.map(nn => nn.next = None)
-      Some(n.get)
+  def push(value: A): Deque[A] = {
+    val node = ValueNode(end.prev, value, end)
+    end.prev.next = node
+    end.prev = node
+    this
+  }
+
+  def pop: Option[A] = {
+    end.prev match {
+      case EndNode(_, _) => None
+      case ValueNode(p, v, n) =>
+        end.prev.next = p
+        end.prev = p
+        Some(v)
+    }
   }
 }
 
 object Deque {
-  def apply[A](): Deque[A] = Deque(None, None)
+  def apply[A](): Deque[A] = new Deque[A]
 }

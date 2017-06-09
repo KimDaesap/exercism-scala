@@ -1,48 +1,65 @@
 class Deque[A] {
-  abstract class Node[B] {
-    var prev: Node[B]
-    var next: Node[B]
+
+  type TNode = Option[Node]
+
+  sealed trait Node{
+    var prev: TNode
+    var next: TNode
   }
 
-  case class EndNode(var prev: Node[A], var next: Node[A]) extends Node[A]
-  case class ValueNode(var prev: Node[A], get: A, var next: Node[A]) extends Node[A]
+  case class EndNode(var prev: TNode, var next: TNode) extends Node
+  case class ValueNode(var prev: TNode, value: A, var next: TNode) extends Node
 
-  val end: EndNode = EndNode(null, null)
-  end.prev = end
-  end.next = end
+  var end: TNode = Some(EndNode(None, None))
+  end.foreach(en => {
+    en.prev = end
+    en.next = end
+  })
 
-  def unshift(value: A): Deque[A] = {
-    val node = ValueNode(end, value, end.next)
-    end.next.prev = node
-    end.next = node
-    this
+  def unshift(value: A): Unit = {
+    val node: TNode = Some(ValueNode(end, value, end.flatMap(en => en.next)))
+    end.foreach(en => {
+      en.next.foreach(fn => fn.prev = node)
+      en.next = node
+    })
   }
 
   def shift: Option[A] = {
-    end.next match {
-      case EndNode(_, _) => None
-      case ValueNode(p, v, n) =>
-        end.next.prev = n
-        end.next = n
-        Some(v)
-    }
+    end.flatMap(en => en.next.flatMap(fn => fn match {
+      case _: EndNode => None
+      case fn: ValueNode =>
+        en.next = fn.next
+        fn.next.foreach(sn => sn.prev = end)
+        Some(fn.value)
+    }))
   }
 
-  def push(value: A): Deque[A] = {
-    val node = ValueNode(end.prev, value, end)
-    end.prev.next = node
-    end.prev = node
-    this
+  def push(value: A): Unit = {
+    val node: TNode = Some(ValueNode(end.flatMap(en => en.prev), value, end))
+    end.foreach(en => {
+      en.prev.foreach(ln => ln.next = node)
+      en.prev = node
+    })
   }
 
   def pop: Option[A] = {
-    end.prev match {
-      case EndNode(_, _) => None
-      case ValueNode(p, v, n) =>
-        end.prev.next = p
-        end.prev = p
-        Some(v)
+    end.flatMap(en => en.prev.flatMap(ln => ln match {
+      case _: EndNode => None
+      case ln: ValueNode =>
+        en.prev = ln.prev
+        ln.prev.foreach(sn => sn.next = end)
+        Some(ln.value)
+    }))
+  }
+
+  def print: String = {
+    def loop(node: TNode): String = {
+      node.map(n => n.next match {
+        case Some(nn: ValueNode) => nn.value.toString + "," + loop(n.next)
+        case _ => "end"
+      }).get
     }
+    loop(end)
   }
 }
 

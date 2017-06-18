@@ -24,7 +24,17 @@ sealed trait Tree {
     case _ => Nil
   }
 
-  def Equals(sub: Tree): Boolean = this.list == sub.list
+  def traverse2[A,B](sub: Tree)(f: Tree => Tree): Tree = ???
+
+  def equals(sub: Tree): Boolean = {
+    (this, sub) match {
+      case (t: Node, s: Node) =>
+        if (s.value < t.value) t.left.equals(s.value)
+        else if (t.value < s.value) t.right.equals(s.value)
+        else t.left.equals(s.left) || t.right.equals(s.right)
+      case (t, s) => t == s
+    }
+  }
 
   def isSubset(sub: Tree): Boolean = this.list.containsSlice(sub.list)
 

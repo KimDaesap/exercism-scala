@@ -12,7 +12,7 @@ object CustomSet {
   def empty(set: CustomSet): Boolean = set.tree.isEmpty
 
   def isEqual(left: CustomSet, right: CustomSet): Boolean =
-    left.tree.Equals(right.tree)
+    left.tree.equals(right.tree)
 
   def isSubsetOf(left: CustomSet, right: CustomSet): Boolean =
     right.tree.isSubset(left.tree)

@@ -19,81 +19,87 @@ sealed trait Tree {
     case _ => false
   }
 
-  def list: List[Int] = this match {
-    case Node(c, l, v, r) => l.list ::: v :: r.list
-    case _ => Nil
+  def stream: Stream[Int] = this match {
+    case Node(c, l, v, r) => l.stream #::: v #:: r.stream
+    case _ => Stream.Empty
   }
 
-  def insert(x: Int): Tree = add(this, x) match {
-    case t: Node => t.copy(color = Black)
-    case _ => Empty
-  }
+  def isEqual(sub: Tree): Boolean = this.stream == sub.stream
 
-  private def add(t: Tree, x: Int): Tree = t match {
-    // BST insertion logic base + RB balance
-    case Node(c, l, v, r) =>
-      if (x < v) balance(Node(c, add(l, x), v, r))
-      else if (v < x) balance(Node(c, l, v, add(r, x)))
-      else Node(c, l, v, r)
-    case Leaf => Node(Red, Leaf, x, Leaf)
-    // first insert (case 1)
-    case Empty => Node(Black, Leaf, x, Leaf)
-  }
+  def isSubset(sub: Tree): Boolean = this.stream.containsSlice(sub.stream)
 
-  private def balance(tree: Tree): Tree = tree match {
-    case Node(Black, Node(Red, Node(Red, a, x, b), y, c), z, d) =>
-      Node(Red, Node(Black, a, x, b), y, Node(Black, c, z, d))
-    case Node(Black, Node(Red, a, x, Node(Red, b, y, c)), z, d) =>
-      Node(Red, Node(Black, a, x, b), y, Node(Black, c, z, d))
-    case Node(Black, a, x, Node(Red, b, y, Node(Red, c, z, d))) =>
-      Node(Red, Node(Black, a, x, b), y, Node(Black, c, z, d))
-    case Node(Black, a, x, Node(Red, Node(Red, b, y, c), z, d)) =>
-      Node(Red, Node(Black, a, x, b), y, Node(Black, c, z, d))
-    case _ => tree
+  def isDisjointFrom(sub: Tree): Boolean = this.stream.forall(!sub.stream.contains(_))
+
+  def intersection(sub: Tree): Tree = Tree.fromSeq(this.stream.filter(sub.stream.contains(_)))
+
+  def difference(sub: Tree): Tree = Tree.fromSeq(this.stream.filter(!sub.stream.contains(_)))
+
+  def union(sub: Tree): Tree = sub.stream.foldLeft(this) ((acc, x) => acc.insert(x))
+
+  def insert(x: Int): Tree = {
+    def add(t: Tree, x: Int): Tree = t match {
+      // BST insertion logic base + RB balance
+      case Node(c, l, v, r) =>
+        if (x < v) balance(Node(c, add(l, x), v, r))
+        else if (v < x) balance(Node(c, l, v, add(r, x)))
+        else Node(c, l, v, r)
+      case Leaf => Node(Red, Leaf, x, Leaf)
+      // first insert (case 1)
+      case Empty => Node(Black, Leaf, x, Leaf)
+    }
+
+    def balance(tree: Tree): Tree = tree match {
+      case Node(Black, Node(Red, Node(Red, a, x, b), y, c), z, d) =>
+        Node(Red, Node(Black, a, x, b), y, Node(Black, c, z, d))
+      case Node(Black, Node(Red, a, x, Node(Red, b, y, c)), z, d) =>
+        Node(Red, Node(Black, a, x, b), y, Node(Black, c, z, d))
+      case Node(Black, a, x, Node(Red, b, y, Node(Red, c, z, d))) =>
+        Node(Red, Node(Black, a, x, b), y, Node(Black, c, z, d))
+      case Node(Black, a, x, Node(Red, Node(Red, b, y, c), z, d)) =>
+        Node(Red, Node(Black, a, x, b), y, Node(Black, c, z, d))
+      case _ => tree
+    }
+
+    add(this, x) match {
+      case t: Node => t.copy(color = Black)
+      case _ => Empty
+    }
   }
 }
 
 object Tree {
   def apply(): Tree = Empty
-
-  def fromList(list: List[Int]): Tree = {
-    list.foldLeft(Tree()) ((acc, x) => acc.insert(x))
-  }
+  def fromSeq(xs: Seq[Int]): Tree = xs.foldLeft(Tree()) ((acc, x) => acc.insert(x))
 }
 
-class CustomSet(val tree: Tree) {
-  def this(list: List[Int]) { this(Tree.fromList(list.sorted)) }
-  def list: List[Int] = tree.list
-}
+case class CustomSet(tree: Tree)
 
 object CustomSet {
-  def apply(): CustomSet = new CustomSet(Nil)
+  def apply(): CustomSet = CustomSet(Tree())
 
-  def fromList(list: List[Int]): CustomSet = new CustomSet(list)
+  def fromList(list: List[Int]): CustomSet = CustomSet(Tree.fromSeq(list))
 
   def member(set: CustomSet, n: Int): Boolean = set.tree.contains(n)
 
   def empty(set: CustomSet): Boolean = set.tree.isEmpty
 
   def isEqual(left: CustomSet, right: CustomSet): Boolean =
-    left.list == right.list
+    left.tree.isEqual(right.tree)
 
   def isSubsetOf(left: CustomSet, right: CustomSet): Boolean =
-    right.list.containsSlice(left.list)
+    right.tree.isSubset(left.tree)
 
   def isDisjointFrom(left: CustomSet, right: CustomSet): Boolean =
-    left.list.forall(!right.tree.contains(_))
+    left.tree.isDisjointFrom(right.tree)
 
-  def insert(set: CustomSet, n: Int): CustomSet = new CustomSet(set.tree.insert(n))
+  def insert(set: CustomSet, n: Int): CustomSet = CustomSet(set.tree.insert(n))
 
   def intersection(left: CustomSet, right: CustomSet): CustomSet =
-    fromList(left.list.filter(right.tree.contains(_)))
+    CustomSet(left.tree.intersection(right.tree))
 
   def difference(left: CustomSet, right: CustomSet): CustomSet =
-    fromList(left.list.filter(!right.tree.contains(_)))
+    CustomSet(left.tree.difference(right.tree))
 
-  def union(left: CustomSet, right: CustomSet): CustomSet = right.list match {
-    case Nil => left
-    case h :: t => union(insert(left, h), fromList(t))
-  }
+  def union(left: CustomSet, right: CustomSet): CustomSet =
+    CustomSet(right.tree.union(left.tree))
 }

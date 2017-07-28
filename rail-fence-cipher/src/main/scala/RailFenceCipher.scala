@@ -1,42 +1,35 @@
 import scala.collection.mutable.ListBuffer
 
 object RailFenceCipher {
-  def encode(text: String, railNumber: Int): String = {
-    type Rails = ListBuffer[String]
+  type Rails = ListBuffer[List[(Int, Char)]]
 
-    def go(ts: String, number: Int, inc: Int, rails: Rails): Rails = {
-      if (ts.isEmpty) rails
-      else {
-        val ninc =
-          if (number == 0) 1
-          else if (number == (railNumber - 1)) -1
-          else inc
-        rails(number) += ts.head
-        go(ts.tail, number + ninc, ninc, rails)
-      }
-    }
-
-    go(text, 0, 1, ListBuffer.fill(railNumber)("")).mkString
+  def encode(text: String, depth: Int): String = {
+    collect(text, depth)
+      .flatten
+      .map { case (i, c) => c }
+      .mkString
   }
 
-  def decode(text: String, railNumber: Int): String = {
-    type Rails = ListBuffer[ListBuffer[Int]]
+  def decode(text: String, depth: Int): String = {
+    val indexes = collect(text, depth)
+      .flatten
+      .map { case (i, c) => i }
 
-    def go1(ts: String, number: Int, inc: Int, index: Int, rails: Rails): List[Int] = {
-      if (ts.isEmpty) rails.foldLeft(List[Int]())((acc, xs) => acc ::: xs.toList)
-      else {
-        val ninc =
-          if (number == 0) 1
-          else if (number == (railNumber - 1)) -1
-          else inc
-        rails(number) += index
-        go1(ts.tail, number + ninc, ninc, index + 1, rails)
-      }
-    }
+    (0 until text.length)
+      .foldLeft("")((acc, i) =>
+        acc + text(indexes.indexOf(i)))
+  }
 
-    val indexes = go1(text, 0, 1, 0, ListBuffer.fill(railNumber)(ListBuffer[Int]()))
-    (0 until text.length).foldLeft("")((acc, i) => {
-      acc + text(indexes.indexOf(i))
-    })
+  def collect(ts: String, depth: Int): Rails = {
+    val empty = ListBuffer.fill(depth)(List[(Int, Char)]())
+    ts.foldLeft((0, 0, 0, empty))((acc, a) => {
+      val (line, inc, index, z)  = acc
+      val ninc =
+        if (line == 0) 1
+        else if (line == (depth - 1)) - 1
+        else inc
+      z(line) = z(line) :+ (index, a)
+      (line + ninc, ninc, index + 1, z)
+    })._4
   }
 }

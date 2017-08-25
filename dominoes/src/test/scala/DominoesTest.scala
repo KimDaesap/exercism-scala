@@ -72,12 +72,14 @@ class DominoesTest extends FunSuite with Matchers {
   private def checkChain(result: List[(Int, Int)], input: List[(Int, Int)]): Unit = {
     def sortDomino(ab: (Int, Int)): (Int, Int) =
       if (ab._1 > ab._2) ab.swap else ab
+
     def consecutivesShouldMatch(dominoes: List[((Int, Int), Int)]): Unit =
       dominoes.tails foreach {
         case (a@(_,x), i1)::(b@(y,_), i2)::_ =>
           assert(x == y, s"dominoes $i1 and $i2 don't match: $a $b")
         case _ =>
       }
+
     def endsShouldMatch: Unit =
       if (!result.isEmpty)
         consecutivesShouldMatch(List((result.last, result.length - 1),
